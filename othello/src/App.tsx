@@ -1,5 +1,6 @@
 import React from 'react';
-import { Board } from './components/Board';
+// import { Board } from './components/Board';
+import Board from './components/Board';
 import { useGame } from './hooks/useGame';
 import { countPieces } from './lib/othello';
 import './App.css';

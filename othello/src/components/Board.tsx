@@ -1,51 +1,40 @@
-import { useReducer } from 'react';
-import { createInitialBoard, getValidMoves, applyMove } from '../lib/othello';
-import type { Board, Player } from '../lib/types';
+import React from 'react';
+import type { Board as BoardType } from '../lib/types';
+import './Board.css';
 
-type State = {
-  board: Board;
-  current: Player;
+type Props = {
+  board: BoardType;
   validMoves: { row: number; col: number }[];
+  onMove: (r: number, c: number) => void;
 };
 
-type Action =
-  | { type: 'RESET' }
-  | { type: 'MOVE'; row: number; col: number };
-
-function init(): State {
-  const board = createInitialBoard();
-  const current: Player = 'B';
-  return { board, current, validMoves: getValidMoves(board, current) };
+function Board({ board, validMoves, onMove }: Props) {
+  const validSet = new Set(validMoves.map(m => `${m.row},${m.col}`));
+  return (
+    <div className="board" role="grid" aria-label="Othello board">
+      {board.map((row, r) => (
+        <div key={r} className="board-row" role="row">
+          {row.map((cell, c) => {
+            const isValid = validSet.has(`${r},${c}`);
+            return (
+              <button
+                key={c}
+                className={`cell ${isValid ? 'valid' : ''}`}
+                onClick={() => isValid && onMove(r, c)}
+                aria-label={`row ${r + 1} col ${c + 1}`}
+                role="gridcell"
+                type="button"
+              >
+                {cell === 'B' && <div className="disk black" />}
+                {cell === 'W' && <div className="disk white" />}
+                {cell === null && isValid && <div className="hint" />}
+              </button>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
 }
 
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'RESET':
-      return init();
-    case 'MOVE': {
-      const newBoard = applyMove(state.board, action.row, action.col, state.current);
-      if (!newBoard) return state;
-      const next: Player = state.current === 'B' ? 'W' : 'B';
-      const nextValid = getValidMoves(newBoard, next);
-      if (nextValid.length > 0) {
-        return { board: newBoard, current: next, validMoves: nextValid };
-      }
-      // 相手に手が無ければパス（元プレイヤーに戻る）かゲーム終了
-      const curValid = getValidMoves(newBoard, state.current);
-      if (curValid.length > 0) {
-        return { board: newBoard, current: state.current, validMoves: curValid };
-      }
-      // 両者パス => ゲーム終了（validMoves 空）
-      return { board: newBoard, current: next, validMoves: [] };
-    }
-    default:
-      return state;
-  }
-}
-
-export function useGame() {
-  const [state, dispatch] = useReducer(reducer, undefined, init);
-  return { state, dispatch };
-}
-
-
+export default Board;
