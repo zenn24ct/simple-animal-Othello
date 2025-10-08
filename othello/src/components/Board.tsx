@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { createInitialBoard, getValidMoves, applyMove } from '../lib/othello';
-import { Board, Player } from '../lib/types';
+import type { Board, Player } from '../lib/types';
 
 type State = {
   board: Board;
@@ -47,3 +47,5 @@ export function useGame() {
   const [state, dispatch] = useReducer(reducer, undefined, init);
   return { state, dispatch };
 }
+
+

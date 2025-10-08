@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { createInitialBoard, getValidMoves, applyMove } from '../lib/othello';
-import { Board, Player } from '../lib/types';
+import type { Board, Player } from '../lib/types';
 
 type State = {
   board: Board;

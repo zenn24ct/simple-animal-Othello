@@ -1,4 +1,4 @@
-import { Board, Cell, Player } from './types';
+import type { Board, Cell, Player } from './types';
 
 export const SIZE = 8;
 const DIRECTIONS = [
