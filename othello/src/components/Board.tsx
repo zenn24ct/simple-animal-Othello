@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Board as BoardType } from '../lib/types';
 import './Board.css';
 
